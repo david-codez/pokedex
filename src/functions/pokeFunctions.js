@@ -1,44 +1,36 @@
 
+export const MAX_BASE_STAT = 255
+
+export const cleanFlavorText = (flavorText) => {
+    return flavorText
+        .replace(/­\n/g, '')
+        .replace(/[\f\n\r­]/g, ' ')
+        .replace(/POKéMON/g, 'Pokémon')
+        .replace(/\s+/g, ' ')
+        .trim()
+}
+
+const findEnglishEntry = (entries) => entries.find((entry) => entry.language.name === 'en')
+
 export const getPokemon = async (pokeId) => {
-    let loadPoke = `https://pokeapi.co/api/v2/pokemon/${pokeId}`
-    let loadDescription = `https://pokeapi.co/api/v2/pokemon-species/${pokeId}/`
-    // let pokemon = {}
-    let pokedexEntry = {
-        pokemon: {},
-        description: ''
-    }
-    let index = 0
-    let isEnglish = false
+    const loadPoke = `https://pokeapi.co/api/v2/pokemon/${pokeId}`
+    const loadDescription = `https://pokeapi.co/api/v2/pokemon-species/${pokeId}/`
 
-    const res = await fetch(loadPoke)
-    const secondRes = await fetch(loadDescription)
+    const [res, secondRes] = await Promise.all([fetch(loadPoke), fetch(loadDescription)])
+    if (!res.ok || !secondRes.ok) {
+        throw new Error(`PokeAPI answered ${res.status} / ${secondRes.status} for Pokémon #${pokeId}`)
+    }
     const pokemon = await res.json()
-    const description = await secondRes.json()
-    await console.log(description)
-    await console.log(description.flavor_text_entries[index].flavor_text)
-    pokedexEntry.pokemon = pokemon
-    while(isEnglish === false) {
+    const species = await secondRes.json()
 
-            if(description.flavor_text_entries[index].language.name === 'en') {
-                console.log(index)
-                console.log(description.flavor_text_entries[index].language.name)
-                console.log('is english set to true')
-                isEnglish = true
-               
-            }
-            else{
-                index++
-            
-                console.log('not english, index is now ' + index)
-            }
-         
+    const englishFlavor = findEnglishEntry(species.flavor_text_entries)
+    const englishGenus = findEnglishEntry(species.genera)
+
+    return {
+        pokemon,
+        description: englishFlavor ? cleanFlavorText(englishFlavor.flavor_text) : '',
+        genus: englishGenus ? englishGenus.genus : '',
     }
-    pokedexEntry.description = description.flavor_text_entries[index].flavor_text
-    isEnglish = false
-
-     
-    return pokedexEntry
-    
 }
 
 export const getAllPokemon = async () => {
@@ -51,7 +43,7 @@ export const getAllPokemon = async () => {
     pokemon.push(data)
 
     return pokemon
-    
+
 }
 
 export const calculateHeight = (height) => {
@@ -59,11 +51,11 @@ export const calculateHeight = (height) => {
     let heightString = ''
     let inches = height * 3.937
     let feet = Math.floor(inches / 12)
-    
+
     inches = Math.floor(inches % 12)
     if(feet > 0) { heightString = `${feet} ft. ${inches} inches`}
     else { heightString = `${inches} inches`}
-    
+
     return heightString
 
 }
@@ -77,6 +69,25 @@ export const calculateWeight = (weight) => {
     return weightString
 }
 
+export const metricHeight = (height) => `${(height / 10).toFixed(1)} m`
+export const metricWeight = (weight) => `${(weight / 10).toFixed(1)} kg`
+
+const STAT_LABELS = {
+    'hp': 'HP',
+    'attack': 'Attack',
+    'defense': 'Defense',
+    'special-attack': 'Sp. Atk',
+    'special-defense': 'Sp. Def',
+    'speed': 'Speed',
+}
+
+export const statLabel = (statName) => STAT_LABELS[statName] || statName
+
+// TODO(design choice): the scale the bars are drawn against. The true ceiling is 255 (Blissey's HP),
+// which keeps every Pokémon comparable but leaves typical stats (40-130) as short bars.
+export const statBarPercent = (baseStat) => {
+    return Math.min(baseStat / MAX_BASE_STAT, 1) * 100
+}
 
 export const threeDigitNumber = (pokeId) => {
     let number
@@ -88,5 +99,3 @@ export const threeDigitNumber = (pokeId) => {
     return number
 
 }
-
-

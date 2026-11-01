@@ -1,65 +1,76 @@
 import React from 'react'
-import { Container, Col, Row } from 'react-bootstrap'
 import StatTable from './StatTable'
 import TypeTable from './TypeTable'
 import { threeDigitNumber } from '../functions/pokeFunctions'
 import SizeTable from './SizeTable'
 
-
-
 const PokemonDetail = (props) => {
   let pokeData = props.pokemon
   let description = props.description
-  // let abilities = pokemon.abilities
-  console.log(props)
+  let genus = props.genus
+  let primaryType = pokeData.types[0].type.name
 
   return (
-    <div>
-                
-        <h3 className='pokemon-name'>#{threeDigitNumber(pokeData.id)} {pokeData.name}</h3>
-        <Row className='pokedex-media-row'> 
-          <Col md='1' > 
-          
-          </Col>
-          <Col md='5'>
-            <Container className='pokemon-image-container'>
-              <img 
-                src={pokeData.sprites.other['official-artwork'].front_default} 
-                alt={pokeData.name} 
-                className='pokemon-image'
-                height='250'
-                width='250'
-              />
-            </Container>
-          </Col>
-          <Col md='4'>
-            <div className='pokedex-entry typewriter'>
-           
-              <p className=''>{description} </p>
-            </div>
-          </Col>
-          <Col md='2' > 
-          
-          </Col>
-    
-        </Row>
+    <article className='pokemon-detail'>
+      <div className='title-row'>
+        <div>
+          <h1 className='pokemon-name'>
+            {pokeData.name}
+            <span className='pokedex-entry-number'>#{threeDigitNumber(pokeData.id)}</span>
+          </h1>
+          {genus && <p className='pokemon-genus'>{genus}</p>}
+        </div>
+        <TypeTable pokeTypes={pokeData.types} />
+      </div>
 
-        <Container className='pokemon-data-tables'>
-          <Row>
-            <Col md='4'>
-              <SizeTable height={pokeData.height} weight={pokeData.weight} />
-            </Col>
-            <Col md='4'>
-              <TypeTable pokeTypes={pokeData.types} />
-            </Col>
-            <Col md='4'> 
-              <StatTable className='pokemon-stats' statTableData={pokeData.stats} />
-            </Col>
-          </Row>
-        </Container>
+      <div className='detail-grid'>
+        <figure className={`artwork-card type-ground-${primaryType}`}>
+          <img
+            src={pokeData.sprites.other['official-artwork'].front_default}
+            alt={`Official artwork of ${pokeData.name}`}
+            className='pokemon-image'
+            width='475'
+            height='475'
+          />
+        </figure>
 
-    </div>
+        <div className='detail-column'>
+          <section className='panel' aria-labelledby='entry-heading'>
+            <h2 id='entry-heading' className='panel-title'>Pokédex entry</h2>
+            <p className='pokedex-entry'>{description || '—'}</p>
+            <SizeTable height={pokeData.height} weight={pokeData.weight} />
+          </section>
+
+          <StatTable statTableData={pokeData.stats} />
+        </div>
+      </div>
+    </article>
   )
 }
+
+const PokemonDetailLoading = () => (
+  <div className='pokemon-detail is-loading' aria-busy='true' aria-label='Loading Pokémon'>
+    <div className='title-row'>
+      <div>
+        <h1 className='pokemon-name'><span className='skeleton skeleton-title' /></h1>
+        <p className='pokemon-genus'><span className='skeleton skeleton-line' /></p>
+      </div>
+    </div>
+    <div className='detail-grid'>
+      <div className='artwork-card' />
+      <div className='detail-column'>
+        <section className='panel'>
+          <h2 className='panel-title'>Pokédex entry</h2>
+          <p className='pokedex-entry'><span className='skeleton skeleton-line' /></p>
+        </section>
+        <section className='panel'>
+          <h2 className='panel-title'>Base stats</h2>
+        </section>
+      </div>
+    </div>
+  </div>
+)
+
+PokemonDetail.Loading = PokemonDetailLoading
 
 export default PokemonDetail

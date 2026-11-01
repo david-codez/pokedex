@@ -1,29 +1,22 @@
 import React from 'react'
-import { Table } from 'react-bootstrap'
-import {calculateHeight, calculateWeight} from '../functions/pokeFunctions'
+import {calculateHeight, calculateWeight, metricHeight, metricWeight} from '../functions/pokeFunctions'
 
 const SizeTable = (props) => {
     let height = calculateHeight(props.height)
     let weight = calculateWeight(props.weight)
-    // console.log(height, weight)
   return (
-   
-    <div>
-        <Table striped className='size-table'>
-            <tbody>
-                <tr>
-                    <th className='size-table-header'>Height</th>
-                    <th className='size-table-header'>Weight</th>
-                </tr>
-                <tr>
-                    <td className='size-table-header'>{height}</td>
-                    <td className='size-table-value'>{weight}</td>
-                </tr>
-            </tbody>
-           
-        </Table>
-    </div>
-    
+    <dl className='size-table'>
+        <div className='size-cell'>
+            <dt className='size-table-header'>Height</dt>
+            <dd className='size-table-value'>{height}</dd>
+            <dd className='size-table-metric'>{metricHeight(props.height)}</dd>
+        </div>
+        <div className='size-cell'>
+            <dt className='size-table-header'>Weight</dt>
+            <dd className='size-table-value'>{weight}</dd>
+            <dd className='size-table-metric'>{metricWeight(props.weight)}</dd>
+        </div>
+    </dl>
   )
 }
 

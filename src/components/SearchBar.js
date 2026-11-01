@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Button, Col, Row } from 'react-bootstrap'
 import {FaArrowLeft, FaArrowRight} from 'react-icons/fa'
 import { toast } from 'react-toastify'
 
@@ -21,7 +20,6 @@ const SearchBar = (props) => {
             return
         }
         else {
-        console.log(userInput)
         props.retrieveCurrentPokemon(userInput)
         setUserInput(userInput)
         }
@@ -36,13 +34,12 @@ const SearchBar = (props) => {
             let newId = parseInt(userInput) + 1
             props.retrieveCurrentPokemon(newId)
             setUserInput(newId)
-            console.log(userInput)
         }
 
     }
 
     const handleBackwardButton = (e) => {
-       
+
         if(userInput === 1) {
             toast.error("This is the first pokemon on the list")
             return
@@ -51,39 +48,45 @@ const SearchBar = (props) => {
             let newId = parseInt(userInput) - 1
             props.retrieveCurrentPokemon(newId)
             setUserInput(newId)
-            console.log(newId)
         }
 
     }
 
-    
+
 
   return (
     <div className='search-bar'>
-        <Row className='pt-3'>
-            <Col>
-                <Button className='pokemon-scroll-buttons' type='button' onClick={handleBackwardButton}><FaArrowLeft /></Button>
-            </Col>
-            <Col>
-                <form className='pokemon-id-search-form' onSubmit={handleOnSubmit}>
-                    <input 
-                        type='number' 
-                        placeholder="Enter Pokemon #" 
-                        className='pokemon-id-input-field' 
-                        onChange={handleUserInput}
-                        value={userInput}
-                        />
-                    <Button type='submit' className='search-button'>GO!</Button>
-                </form>
-            </Col>
-            <Col>
-                <Button className='pokemon-scroll-buttons' type='button' onClick={handleForwardButton}><FaArrowRight /></Button>
-            </Col>
-        </Row>
-        <hr />
-
-  
-
+        <button
+            className='pokemon-scroll-buttons'
+            type='button'
+            onClick={handleBackwardButton}
+            aria-label='Previous Pokémon'
+        >
+            <FaArrowLeft aria-hidden='true' />
+        </button>
+        <form className='pokemon-id-search-form' onSubmit={handleOnSubmit}>
+            <label className='visually-hidden' htmlFor='pokemon-id-input'>Pokédex number, 1 to 905</label>
+            <input
+                id='pokemon-id-input'
+                type='number'
+                min='1'
+                max='905'
+                inputMode='numeric'
+                placeholder="#"
+                className='pokemon-id-input-field'
+                onChange={handleUserInput}
+                value={userInput}
+                />
+            <button type='submit' className='search-button'>Go</button>
+        </form>
+        <button
+            className='pokemon-scroll-buttons'
+            type='button'
+            onClick={handleForwardButton}
+            aria-label='Next Pokémon'
+        >
+            <FaArrowRight aria-hidden='true' />
+        </button>
     </div>
   )
 }

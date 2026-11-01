@@ -3,7 +3,7 @@ import SearchBar from './components/SearchBar';
 import Nav from './components/Nav';
 import PokemonDetail from './components/PokemonDetail';
 import {getPokemon} from './functions/pokeFunctions'
-import {ToastContainer} from 'react-toastify'
+import {ToastContainer, toast} from 'react-toastify'
 
 function App() {
 
@@ -11,44 +11,45 @@ function App() {
   const [pokemon, setPokemon] = useState([])
   const [currentPokemon, setCurrentPokemon] = useState(1)
   const [pokemonDescription, setPokemonDescription] = useState('')
+  const [pokemonGenus, setPokemonGenus] = useState('')
 
 
   const retrieveCurrentPokemon = async (id) => {
-      let poke = await getPokemon(id)
-      // console.log(poke)
-      setPokemon(poke.pokemon)
-      setPokemonDescription(poke.description)
-      setCurrentPokemon(id)
-      console.log(pokemonDescription)
-      setLoaded(true)
+      try {
+          let poke = await getPokemon(id)
+          setPokemon(poke.pokemon)
+          setPokemonDescription(poke.description)
+          setPokemonGenus(poke.genus)
+          setCurrentPokemon(id)
+          setLoaded(true)
+      } catch (error) {
+          console.error(error)
+          toast.error(`Couldn't load Pokémon #${id}. Check your connection and try again.`)
+      }
   }
-
-  // const [allPokemons, setAllPokemons] = useState([])
-
-  // const fetchAllPokemon = async () => {
-  //   let all = await getAllPokemon()
-
-  //   // console.log(all[0].results)
- 
-  // }
-
 
   useEffect(() => {
       retrieveCurrentPokemon(currentPokemon)
-      
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
- 
- 
+
+
   return (
     <div className="App">
-      <Nav />
-      <SearchBar retrieveCurrentPokemon={retrieveCurrentPokemon} />
-     
-      {
-        loaded === true  ? <PokemonDetail pokemon={pokemon} description={pokemonDescription} />  : <></>
-      }
-      <ToastContainer />
+      <header className="dex-bar">
+        <Nav />
+        <SearchBar retrieveCurrentPokemon={retrieveCurrentPokemon} />
+      </header>
+
+      <main className="dex-canvas">
+        {
+          loaded === true
+            ? <PokemonDetail pokemon={pokemon} description={pokemonDescription} genus={pokemonGenus} />
+            : <PokemonDetail.Loading />
+        }
+      </main>
+      <ToastContainer position="bottom-center" hideProgressBar />
     </div>
   );
 }
