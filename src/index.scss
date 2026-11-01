@@ -93,7 +93,9 @@ button, input {
 }
 
 .dex-brand {
-  display: flex;
+  // Equal side columns keep the logo centred on the bar no matter how wide the lens is.
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 20px;
   padding: 14px var(--inline);
@@ -103,7 +105,7 @@ button, input {
 
   &::before {
     content: "";
-    flex: none;
+    justify-self: start;
     width: 52px;
     height: 52px;
     border-radius: 50%;
