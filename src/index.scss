@@ -53,6 +53,8 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  // Every size in this sheet is in px, so zoom is the one place to shrink the whole layout to fit a single screen.
+  zoom: 0.9;
 }
 
 h1, h2, p, dl, dd, figure, ul {
