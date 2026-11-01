@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.65f3bf08.css",
+    "main.js": "/static/js/main.15c58cfe.js",
+    "static/js/787.7e0b23c5.chunk.js": "/static/js/787.7e0b23c5.chunk.js",
+    "static/media/pokemon-logo.png": "/static/media/pokemon-logo.5b8a5f1101a4404b9428.png",
+    "index.html": "/index.html",
+    "main.65f3bf08.css.map": "/static/css/main.65f3bf08.css.map",
+    "main.15c58cfe.js.map": "/static/js/main.15c58cfe.js.map",
+    "787.7e0b23c5.chunk.js.map": "/static/js/787.7e0b23c5.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.65f3bf08.css",
+    "static/js/main.15c58cfe.js"
+  ]
+}
